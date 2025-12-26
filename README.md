@@ -1,3 +1,43 @@
+# RedditMiner: Subreddit Image Scraper
+
+## Quick Start
+
+1. **Install RedditMiner from PyPI:**
+    ```bash
+    pip install redditminer
+    ```
+
+2. **Export your Reddit cookies** (see below) and save as `cookies.txt` in your working directory.
+
+3. **Run example commands:**
+
+    - Scrape 200 top posts and save as JSON:
+       ```bash
+       redditminer --subreddit funny --limit 200 --sort top
+       ```
+
+    - Scrape only image URLs (TXT file):
+       ```bash
+       redditminer --subreddit funny --output-mode image_url
+       ```
+
+    - Scrape posts with top-level comments included (JSON):
+       ```bash
+       redditminer --subreddit funny --output-mode post --with-comment
+       ```
+
+    - Scrape and immediately download all images:
+       ```bash
+       redditminer --subreddit funny --output-mode image_url --download-images
+       ```
+
+    - Customize the download directory and parallelism:
+       ```bash
+       redditminer --subreddit funny --output-mode image_url --download-images --output-dir my_images --max-workers 16
+       ```
+
+**Note:**
+Make sure you have `cookies.txt` in your current directory for authentication. If you encounter rate limiting, RedditMiner will automatically slow down and retry.
 
 
 <p align="center">
