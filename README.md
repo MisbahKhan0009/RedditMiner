@@ -33,10 +33,41 @@ RedditMiner is a lightweight, open-source Python tool for scraping image and gal
    - Use a browser extension like "EditThisCookie" or "Get cookies.txt" to export your cookies for `reddit.com`.
    - Save the exported file as `cookies.txt` in the project root directory.
 
+You can install RedditMiner directly from PyPI:
+
+```bash
+pip install redditminer
+```
+
+Or, for development, clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/MisbahKhan0009/RedditMiner.git
+cd RedditMiner
+pip install -e .
+```
+
+### Export your Reddit cookies
+- Log into Reddit in your browser.
+- Use a browser extension like "EditThisCookie" or "Get cookies.txt" to export your cookies for `reddit.com`.
+- Save the exported file as `cookies.txt` in your working directory.
+
 
 ## Usage
 
 Run the scraper with your desired subreddit:
+
+```bash
+python main.py --subreddit EarthPorn
+```
+
+After installation, you can use RedditMiner from the command line:
+
+```bash
+redditminer --subreddit EarthPorn
+```
+
+Or, if running from source:
 
 ```bash
 python main.py --subreddit EarthPorn
@@ -47,6 +78,16 @@ python main.py --subreddit EarthPorn
 
 ### Optional arguments
 
+   - `post` (default): Full post data (JSON)
+   - `image_url`: Only image URLs (from both `image_url` and `gallery_images` fields, TXT file)
+   - `post_with_comments`: Full post data with comments (JSON, same as `post` if `--with-comment` is not set)
+
+**Rate Limiting:**
+If Reddit returns a 429 (Too Many Requests) error, the scraper will automatically slow down and retry after 60 seconds. This helps avoid being blocked by Reddit's rate limits. For best results, avoid running multiple scrapes in parallel and consider using a fresh set of cookies if you encounter repeated rate limiting.
+
+### Command-line options
+
+- `--subreddit` : Subreddit name to scrape (required)
 - `--limit` : Number of posts to scrape (default: 100)
 - `--sort`  : Sort order (`new`, `hot`, `top`, etc.; default: `new`)
 - `--output-mode` : Output format. Options:
@@ -54,9 +95,12 @@ python main.py --subreddit EarthPorn
    - `image_url`: Only image URLs (from both `image_url` and `gallery_images` fields, TXT file)
    - `post_with_comments`: Full post data with comments (JSON, same as `post` if `--with-comment` is not set)
 - `--with-comment` : Include top-level comments for each post (JSON output modes only). Comments from "AutoModerator" are automatically skipped.
+- `--download-images` : Download all found images
+- `--output-dir` : Directory to save images (default: images)
+- `--max-workers` : Number of parallel downloads (default: 8)
 
 **Rate Limiting:**
-If Reddit returns a 429 (Too Many Requests) error, the scraper will automatically slow down and retry after 60 seconds. This helps avoid being blocked by Reddit's rate limits. For best results, avoid running multiple scrapes in parallel and consider using a fresh set of cookies if you encounter repeated rate limiting.
+If Reddit returns a 429 (Too Many Requests) error, RedditMiner will automatically slow down and retry after 60 seconds. For best results, avoid running multiple scrapes in parallel and consider using a fresh set of cookies if you encounter repeated rate limiting.
 
 **Examples:**
 
@@ -89,6 +133,35 @@ python main.py --subreddit funny --output-mode image_url --download-images
 You can customize the download directory and parallelism:
 ```bash
 python main.py --subreddit funny --output-mode image_url --download-images --output-dir my_images --max-workers 16
+```
+
+**Examples:**
+
+Scrape 200 top posts and save as JSON:
+```bash
+redditminer --subreddit funny --limit 200 --sort top
+```
+
+Scrape only image URLs (TXT file):
+```bash
+redditminer --subreddit funny --output-mode image_url
+```
+
+Scrape posts with top-level comments included (JSON):
+```bash
+redditminer --subreddit funny --output-mode post --with-comment
+```
+
+Each post in the output JSON will have a `comments` field containing a list of top-level comments (author, body, score, created_utc). Comments from "AutoModerator" are excluded.
+
+Scrape and immediately download all images:
+```bash
+redditminer --subreddit funny --output-mode image_url --download-images
+```
+
+You can customize the download directory and parallelism:
+```bash
+redditminer --subreddit funny --output-mode image_url --download-images --output-dir my_images --max-workers 16
 ```
 
 Downloaded images are automatically organized by subreddit:

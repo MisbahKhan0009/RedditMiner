@@ -9,3 +9,8 @@ __pycache__/
 # Ignore downloaded images
 images/
 
+# Python packaging
+build/
+dist/
+*.egg-info/
+
