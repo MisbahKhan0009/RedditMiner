@@ -243,6 +243,9 @@ Setup steps:
 - In your GitHub repo settings go to `Settings -> Secrets -> Actions` and add a secret named `PYPI_API_TOKEN` with the token value.
 - Push changes to `main`. The workflow will run and upload artifacts using `twine upload --skip-existing` (so it won't fail if a file with the same name already exists on PyPI).
 
+Note: GitHub secret names cannot contain dashes. The workflow expects the repository secret to be named `pypi_PYPI_API_TOKEN`.
+Create the secret with that exact name and paste the token value (the token value itself usually starts with `pypi-`).
+
 If you prefer publishing only for tagged releases, modify `.github/workflows/publish.yml` to trigger on `push: tags:` instead of `push: branches:`.
 
 ## License

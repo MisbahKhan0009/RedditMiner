@@ -20,8 +20,8 @@ We recommend publishing only from tagged releases to avoid accidental publishes:
    - Name: e.g. `github-actions`.
    - Scope: choose project-specific token or an all-project token per your workflow.
 2. In GitHub, go to your repository → Settings → Secrets → Actions → New repository secret.
-   - Name: `PYPI_API_TOKEN`
-   - Value: the token you created on PyPI
+   - Name: `pypi_PYPI_API_TOKEN` (recommended; GitHub secret names cannot contain dashes)
+   - Value: the token you created on PyPI (token values themselves commonly start with `pypi-`)
 
 ## Workflow triggers
 - Current workflow triggers on pushes to `main`. To publish only for tags, edit `.github/workflows/publish.yml` and replace the `on:` block with:
