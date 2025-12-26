@@ -1,10 +1,35 @@
 import argparse
+import sys
 import os
 import json
 import time
 from redditminer.scraper import RedditImageScraper
 
+try:
+    from importlib.metadata import version as _pkg_version, PackageNotFoundError
+except Exception:
+    try:
+        from importlib_metadata import version as _pkg_version, PackageNotFoundError
+    except Exception:
+        _pkg_version = None
+        PackageNotFoundError = Exception
+
 def main():
+    # Allow --version to run without requiring --subreddit
+    if "--version" in sys.argv:
+        ver = None
+        if _pkg_version:
+            for name in ("RedditMiner", "redditminer"):
+                try:
+                    ver = _pkg_version(name)
+                    break
+                except PackageNotFoundError:
+                    continue
+        if not ver:
+            ver = "1.0.2"
+        print(f"RedditMiner {ver}")
+        return
+
     parser = argparse.ArgumentParser(description="Reddit Image Scraper")
     parser.add_argument("--subreddit", type=str, required=True, help="Subreddit name to scrape images from")
     parser.add_argument("--limit", type=int, default=100, help="Number of posts to scrape (default: 100)")
@@ -14,7 +39,22 @@ def main():
     parser.add_argument("--output-dir", type=str, default="images", help="Directory to save images if downloading")
     parser.add_argument("--max-workers", type=int, default=8, help="Number of parallel downloads if downloading")
     parser.add_argument("--with-comment", action="store_true", help="Include top-level comments for each post (JSON output modes only)")
+    parser.add_argument("--version", action="store_true", help="Show program version and exit")
     args = parser.parse_args()
+
+    if args.version:
+        ver = None
+        if _pkg_version:
+            for name in ("RedditMiner", "redditminer"):
+                try:
+                    ver = _pkg_version(name)
+                    break
+                except PackageNotFoundError:
+                    continue
+        if not ver:
+            ver = "1.0.2"
+        print(f"RedditMiner {ver}")
+        return
 
     subreddit = args.subreddit
     limit = args.limit
