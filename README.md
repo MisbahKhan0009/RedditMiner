@@ -59,6 +59,11 @@ Scrape only image URLs (TXT file):
 python main.py --subreddit funny --output-mode image_url
 ```
 
+Scrape posts with comments included (JSON):
+```bash
+python main.py --subreddit funny --output-mode post --with-comment
+```
+
 Scrape and immediately download all images:
 ```bash
 python main.py --subreddit funny --output-mode image_url --download-images
@@ -92,6 +97,7 @@ RedditMiner/
 ├── cookies.txt            # Your exported Reddit cookies
 ├── README.md
 └── ...
+
 ```
 
 ## Contributing
