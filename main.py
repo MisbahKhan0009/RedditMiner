@@ -30,6 +30,15 @@ def main():
     scraper = RedditImageScraper("cookies.txt")
     images = scraper.get_subreddit_posts(subreddit, limit=limit, sort=sort)
 
+    # Add subreddit name to each image entry
+    for post in images:
+        post["subreddit"] = subreddit
+
+    # Ensure output directory exists
+    output_folder = "output"
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
     if images:
         filename = f"images_{subreddit}_{int(time.time())}"
         if output_mode == "image_url":
@@ -40,20 +49,21 @@ def main():
                     urls.append(post["image_url"])
                 if post.get("gallery_images"):
                     urls.extend(post["gallery_images"])
-            txt_path = f"{filename}.txt"
+            txt_path = os.path.join(output_folder, f"{filename}.txt")
             with open(txt_path, 'w', encoding='utf-8') as f:
                 for url in urls:
                     f.write(url + "\n")
-            print(f"✅ Success! Saved {len(urls)} image URLs to {filename}.txt")
+            print(f"✅ Success! Saved {len(urls)} image URLs to {txt_path}")
             if download_images:
                 from redditminer.downloader import download_images_from_txt
                 print(f"⬇️  Downloading images to '{output_dir}'...")
                 download_images_from_txt(txt_path, output_dir, max_workers)
         else:
             # For now, 'post_with_comments' is the same as 'post' until comment fetching is implemented
-            with open(f"{filename}.json", 'w', encoding='utf-8') as f:
+            json_path = os.path.join(output_folder, f"{filename}.json")
+            with open(json_path, 'w', encoding='utf-8') as f:
                 json.dump(images, f, indent=4, ensure_ascii=False)
-            print(f"✅ Success! Saved {len(images)} image entries to {filename}.json")
+            print(f"✅ Success! Saved {len(images)} image entries to {json_path}")
 
 if __name__ == "__main__":
     main()

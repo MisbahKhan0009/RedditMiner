@@ -18,6 +18,16 @@ def download_image(url, output_dir):
         print(f"[FAIL] {url} - {e}")
 
 def download_images_from_txt(txt_file, output_dir="images", max_workers=8):
+    # Try to extract subreddit from txt filename: images_<subreddit>_TIMESTAMP.txt
+    base = os.path.basename(txt_file)
+    subreddit = None
+    if base.startswith("images_") and "_" in base:
+        parts = base.split("_")
+        if len(parts) > 2:
+            subreddit = parts[1]
+    # Download to images/<subreddit> if possible
+    if subreddit:
+        output_dir = os.path.join(output_dir, subreddit)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     with open(txt_file, "r", encoding="utf-8") as f:
