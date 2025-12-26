@@ -1,3 +1,9 @@
+
+
+<p align="center">
+   <img src="assets/logo.svg" alt="RedditMiner Arctic Logo" width="120" height="120">
+</p>
+
 # RedditMiner: Subreddit Image Scraper
 
 RedditMiner is a lightweight, open-source Python tool for scraping image and gallery URLs from any public or private subreddit using your browser session cookies. No Reddit API credentials required—works even for NSFW and restricted subreddits.
