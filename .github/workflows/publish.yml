@@ -29,8 +29,9 @@ jobs:
       - name: Publish to PyPI
         env:
           TWINE_USERNAME: __token__
-          # Use the repository secret 'pypi_PYPI_API_TOKEN' (GitHub secret names cannot contain dashes)
-          TWINE_PASSWORD: ${{ secrets.pypi_PYPI_API_TOKEN }}
+          # Hardcode the 'pypi-' prefix and combine with the secret remainder
+          # Store only the remainder of the token in the repo secret `PYPI_TOKEN_REMAINDER` (do NOT include the leading 'pypi-')
+          TWINE_PASSWORD: ${{ 'pypi-' + secrets.PYPI_TOKEN_REMAINDER }}
         run: |
           # Use --skip-existing to avoid failing when same version already exists
           python -m twine upload --skip-existing dist/*

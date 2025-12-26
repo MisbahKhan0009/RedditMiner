@@ -233,21 +233,6 @@ RedditMiner/
 
 Contributions are welcome! Please open issues or submit pull requests for new features, bug fixes, or improvements.
 
-## Continuous delivery (GitHub Actions → PyPI)
-
-This repository includes a GitHub Actions workflow that will automatically build and publish the package to PyPI on pushes to the `main` branch.
-
-Setup steps:
-
-- Create a PyPI API token (Account settings → API tokens) and copy it.
-- In your GitHub repo settings go to `Settings -> Secrets -> Actions` and add a secret named `PYPI_API_TOKEN` with the token value.
-- Push changes to `main`. The workflow will run and upload artifacts using `twine upload --skip-existing` (so it won't fail if a file with the same name already exists on PyPI).
-
-Note: GitHub secret names cannot contain dashes. The workflow expects the repository secret to be named `pypi_PYPI_API_TOKEN`.
-Create the secret with that exact name and paste the token value (the token value itself usually starts with `pypi-`).
-
-If you prefer publishing only for tagged releases, modify `.github/workflows/publish.yml` to trigger on `push: tags:` instead of `push: branches:`.
-
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
