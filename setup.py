@@ -2,12 +2,12 @@ from setuptools import setup, find_packages
 
 setup(
     name="RedditMiner",
-    version="1.0.1",
+    version="1.0.2",
     description="A Python tool for scraping images, galleries, and comments from Reddit using browser cookies.",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     author="Misbah Khan",
-    author_email="your-email@example.com",
+    author_email="mkhanmisbah007@gmail.com",
     url="https://github.com/MisbahKhan0009/RedditMiner",
     packages=find_packages(),
     python_requires=">=3.7",
