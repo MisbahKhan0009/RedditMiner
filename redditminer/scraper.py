@@ -18,7 +18,7 @@ class RedditImageScraper:
         cj.load(ignore_discard=True, ignore_expires=True)
         self.session.cookies = cj
 
-    def get_subreddit_posts(self, subreddit, limit=100, sort='new'):
+    def get_subreddit_posts(self, subreddit, limit=100, sort='new', with_comment=False):
         print(f"\n📸 Extracting Images from r/{subreddit}...")
         print(f"   (Sort: {sort}, Target: {limit} posts)")
         posts_collected = []
@@ -29,7 +29,18 @@ class RedditImageScraper:
                 url += f"&after={after}"
             response = self.session.get(url, headers=self.headers)
             if response.status_code != 200:
-                print(f"❌ Error: {response.status_code}")
+                if response.status_code == 429:
+                    print("❌ Error: 429 (Too Many Requests) - You are being rate limited by Reddit.\n   Slowing down requests and retrying in 60 seconds...")
+                    time.sleep(60)
+                    continue  # Retry the same request after waiting
+                elif response.status_code == 403:
+                    print("❌ Error: 403 (Forbidden) - Access denied. Your cookies may be invalid, expired, or lack permission for this subreddit.")
+                elif response.status_code == 401:
+                    print("❌ Error: 401 (Unauthorized) - Authentication failed. Check your cookies.txt file.")
+                elif response.status_code == 404:
+                    print("❌ Error: 404 (Not Found) - The subreddit or resource could not be found.")
+                else:
+                    print(f"❌ Error: {response.status_code} - Unexpected HTTP error.")
                 break
             data = response.json()
             children = data.get("data", {}).get("children", [])
@@ -56,6 +67,31 @@ class RedditImageScraper:
                         "image_url": image_url if is_image else None,
                         "gallery_images": gallery_urls if gallery_urls else None
                     }
+                    # Fetch comments if requested
+                    if with_comment:
+                        permalink = p_data.get('permalink')
+                        if permalink:
+                            comments_url = f"https://www.reddit.com{permalink}.json?limit=1"
+                            try:
+                                comments_resp = self.session.get(comments_url, headers=self.headers)
+                                if comments_resp.status_code == 200:
+                                    comments_data = comments_resp.json()
+                                    if len(comments_data) > 1:
+                                        comment_list = []
+                                        for c in comments_data[1].get("data", {}).get("children", []):
+                                            c_data = c.get("data", {})
+                                            if c.get("kind") == "t1" and c_data.get("author") != "AutoModerator":
+                                                comment_list.append({
+                                                    "author": c_data.get("author"),
+                                                    "body": c_data.get("body"),
+                                                    "score": c_data.get("score"),
+                                                    "created_utc": datetime.fromtimestamp(c_data.get("created_utc", 0), timezone.utc).isoformat()
+                                                })
+                                        post["comments"] = comment_list
+                                else:
+                                    post["comments"] = []
+                            except Exception as e:
+                                post["comments"] = []
                     posts_collected.append(post)
                 if len(posts_collected) >= limit:
                     break

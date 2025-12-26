@@ -13,6 +13,7 @@ def main():
     parser.add_argument("--download-images", action="store_true", help="Download images if output mode is image_url")
     parser.add_argument("--output-dir", type=str, default="images", help="Directory to save images if downloading")
     parser.add_argument("--max-workers", type=int, default=8, help="Number of parallel downloads if downloading")
+    parser.add_argument("--with-comment", action="store_true", help="Include top-level comments for each post (JSON output modes only)")
     args = parser.parse_args()
 
     subreddit = args.subreddit
@@ -28,7 +29,7 @@ def main():
         return
 
     scraper = RedditImageScraper("cookies.txt")
-    images = scraper.get_subreddit_posts(subreddit, limit=limit, sort=sort)
+    images = scraper.get_subreddit_posts(subreddit, limit=limit, sort=sort, with_comment=args.with_comment)
 
     # Add subreddit name to each image entry
     for post in images:
@@ -59,7 +60,7 @@ def main():
                 print(f"⬇️  Downloading images to '{output_dir}'...")
                 download_images_from_txt(txt_path, output_dir, max_workers)
         else:
-            # For now, 'post_with_comments' is the same as 'post' until comment fetching is implemented
+            # Output JSON with or without comments depending on --with-comment
             json_path = os.path.join(output_folder, f"{filename}.json")
             with open(json_path, 'w', encoding='utf-8') as f:
                 json.dump(images, f, indent=4, ensure_ascii=False)

@@ -37,6 +37,7 @@ python main.py --subreddit EarthPorn
 ```
 
 
+
 ### Optional arguments
 
 - `--limit` : Number of posts to scrape (default: 100)
@@ -44,7 +45,8 @@ python main.py --subreddit EarthPorn
 - `--output-mode` : Output format. Options:
    - `post` (default): Full post data (JSON)
    - `image_url`: Only image URLs (from both `image_url` and `gallery_images` fields, TXT file)
-   - `post_with_comments`: Full post data with comments (JSON, coming soon)
+   - `post_with_comments`: Full post data with comments (JSON, same as `post` if `--with-comment` is not set)
+- `--with-comment` : Include top-level comments for each post (JSON output modes only)
 
 **Examples:**
 
@@ -59,10 +61,13 @@ Scrape only image URLs (TXT file):
 python main.py --subreddit funny --output-mode image_url
 ```
 
-Scrape posts with comments included (JSON):
+
+Scrape posts with top-level comments included (JSON):
 ```bash
 python main.py --subreddit funny --output-mode post --with-comment
 ```
+
+Each post in the output JSON will have a `comments` field containing a list of top-level comments (author, body, score, created_utc).
 
 Scrape and immediately download all images:
 ```bash
