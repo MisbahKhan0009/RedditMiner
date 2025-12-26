@@ -2,5 +2,10 @@
 cookies.txt
 *.json
 *.log
+*.txt
 __pycache__/
 .vscode/
+
+# Ignore downloaded images
+images/
+
