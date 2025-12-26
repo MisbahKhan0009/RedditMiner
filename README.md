@@ -38,6 +38,7 @@ python main.py --subreddit EarthPorn
 
 
 
+
 ### Optional arguments
 
 - `--limit` : Number of posts to scrape (default: 100)
@@ -46,7 +47,10 @@ python main.py --subreddit EarthPorn
    - `post` (default): Full post data (JSON)
    - `image_url`: Only image URLs (from both `image_url` and `gallery_images` fields, TXT file)
    - `post_with_comments`: Full post data with comments (JSON, same as `post` if `--with-comment` is not set)
-- `--with-comment` : Include top-level comments for each post (JSON output modes only)
+- `--with-comment` : Include top-level comments for each post (JSON output modes only). Comments from "AutoModerator" are automatically skipped.
+
+**Rate Limiting:**
+If Reddit returns a 429 (Too Many Requests) error, the scraper will automatically slow down and retry after 60 seconds. This helps avoid being blocked by Reddit's rate limits. For best results, avoid running multiple scrapes in parallel and consider using a fresh set of cookies if you encounter repeated rate limiting.
 
 **Examples:**
 
@@ -62,12 +66,13 @@ python main.py --subreddit funny --output-mode image_url
 ```
 
 
+
 Scrape posts with top-level comments included (JSON):
 ```bash
 python main.py --subreddit funny --output-mode post --with-comment
 ```
 
-Each post in the output JSON will have a `comments` field containing a list of top-level comments (author, body, score, created_utc).
+Each post in the output JSON will have a `comments` field containing a list of top-level comments (author, body, score, created_utc). Comments from "AutoModerator" are excluded.
 
 Scrape and immediately download all images:
 ```bash
