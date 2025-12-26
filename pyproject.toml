@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "RedditMiner"
-version = "1.0.0"
+version = "1.0.1"
 description = "A Python tool for scraping images, galleries, and comments from Reddit using browser cookies."
 readme = "README.md"
 authors = [
