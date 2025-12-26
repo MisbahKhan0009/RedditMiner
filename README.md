@@ -64,15 +64,20 @@ Scrape and immediately download all images:
 python main.py --subreddit funny --output-mode image_url --download-images
 ```
 
+
 You can customize the download directory and parallelism:
 ```bash
 python main.py --subreddit funny --output-mode image_url --download-images --output-dir my_images --max-workers 16
 ```
 
+Downloaded images are automatically organized by subreddit:
+- For example, images from r/EarthPorn will be saved in `images/EarthPorn/` by default.
+- If you specify a custom output directory, images will be saved in `<output-dir>/<subreddit>/`.
+
 Results are saved as:
-- JSON: `images_[subreddit]_[timestamp].json`
-- TXT (image URLs): `images_[subreddit]_[timestamp].txt`
-- Downloaded images: in the specified output directory (default: `images/`)
+- JSON: `output/images_[subreddit]_[timestamp].json`
+- TXT (image URLs): `output/images_[subreddit]_[timestamp].txt`
+- Downloaded images: in `images/<subreddit>/` (or `<output-dir>/<subreddit>/` if specified)
 
 ## Project Structure
 
