@@ -53,10 +53,11 @@ class RedditImageScraper:
                 gallery_urls = []
                 if "is_gallery" in p_data and p_data["is_gallery"]:
                     media_metadata = p_data.get("media_metadata", {})
-                    for item_id in media_metadata:
-                        s = media_metadata[item_id].get("s", {})
-                        if "u" in s:
-                            gallery_urls.append(s["u"].replace("&amp;", "&"))
+                    if media_metadata:
+                        for item_id in media_metadata:
+                            s = media_metadata[item_id].get("s", {})
+                            if "u" in s:
+                                gallery_urls.append(s["u"].replace("&amp;", "&"))
                 # Always keep both fields, at least one will be non-null if available
                 if is_image or gallery_urls:
                     post = {
