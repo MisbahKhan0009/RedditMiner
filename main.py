@@ -31,7 +31,7 @@ def main():
         return
 
     parser = argparse.ArgumentParser(description="Reddit Image Scraper")
-    parser.add_argument("--subreddit", type=str, required=True, help="Subreddit name to scrape images from")
+    parser.add_argument("--subreddit", type=str, required=True, help="Subreddit name (r/name) or User profile (u/name) to scrape images from")
     parser.add_argument("--limit", type=int, default=100, help="Number of posts to scrape (default: 100)")
     parser.add_argument("--sort", type=str, default="new", help="Sort order (default: new)")
     parser.add_argument("--output-mode", type=str, default="post", choices=["post", "post_with_comments", "image_url"], help="Output mode: post (default), post_with_comments, image_url")
@@ -69,9 +69,16 @@ def main():
         return
 
     scraper = RedditImageScraper("cookies.txt")
-    images = scraper.get_subreddit_posts(subreddit, limit=limit, sort=sort, with_comment=args.with_comment)
+    
+    if subreddit.startswith("u/"):
+        username = subreddit[2:]
+        images = scraper.get_user_posts(username, limit=limit, sort=sort, with_comment=args.with_comment)
+    else:
+        # Handle r/ prefix or plain subreddit name
+        target_sub = subreddit[2:] if subreddit.startswith("r/") else subreddit
+        images = scraper.get_subreddit_posts(target_sub, limit=limit, sort=sort, with_comment=args.with_comment)
 
-    # Add subreddit name to each image entry
+    # Add source name to each image entry
     for post in images:
         post["subreddit"] = subreddit
 
@@ -81,7 +88,9 @@ def main():
         os.makedirs(output_folder)
 
     if images:
-        filename = f"images_{subreddit}_{int(time.time())}"
+        # Sanitize filename (replace / with _ for u/user)
+        safe_name = subreddit.replace("/", "_")
+        filename = f"images_{safe_name}_{int(time.time())}"
         if output_mode == "image_url":
             # Save only image URLs (image_url or gallery_images)
             urls = []
